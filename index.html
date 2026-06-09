@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack Pro - Carbon Footprint Intelligence</title>
+    <!-- Tailwind CSS v4 for cutting-edge modern UI styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js for sleek, interactive data rings -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white min-h-screen">
+
+    <!-- Header Navigation Grid -->
+    <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl animate-pulse">🌱</span>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">EcoTrack <span class="text-xs font-bold text-emerald-400 px-2 py-0.5 bg-emerald-500/10 rounded-full border border-emerald-500/20 ml-1">v2.0 Pro</span></h1>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800">
+                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span> Hackathon Workspace
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Input & Gamification Control Panel -->
+        <div class="space-y-6">
+            <section class="bg-slate-950/40 border border-slate-800 p-6 rounded-3xl backdrop-blur-xs flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-extrabold tracking-tight text-white mb-1">Activity Log Engine</h2>
+                    <p class="text-xs text-slate-400 mb-6">Input daily behavioral metrics to compute live emissions telemetry.</p>
+                    
+                    <form id="carbonForm" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">🚗 Transport (km driven)</label>
+                            <input type="number" id="transport" min="0" value="0" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all placeholder-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">⚡ Grid Power (kWh used)</label>
+                            <input type="number" id="electricity" min="0" value="0" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all placeholder-slate-600">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">🥩 Core Dietary Signature</label>
+                            <div class="relative">
+                                <select id="diet" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500 appearance-none transition-all cursor-pointer">
+                                    <option value="meat">Meat Intensive Profile</option>
+                                    <option value="balanced">Standard Omnivore / Balanced</option>
+                                    <option value="vegetarian">Vegetarian Regime</option>
+                                    <option value="vegan">Plant-Based / Vegan Core</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" onclick="logData()" class="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-950/50 hover:shadow-emerald-500/10 active:scale-[0.99] cursor-pointer">
+                            Compute & Track Metrics
+                        </button>
+                    </form>
+                </div>
+
+                <button onclick="clearLogs()" class="mt-8 text-[10px] uppercase tracking-wider text-red-400 hover:text-red-300 transition-colors font-bold text-left cursor-pointer">
+                    🚨 Wipe System Cache Logs
+                </button>
+            </section>
+
+            <!-- Dynamic Sustainable Targets Section (Gamification) -->
+            <section class="bg-slate-950/40 border border-slate-800 p-6 rounded-3xl">
+                <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4">Active Green Challenges</h3>
+                <div id="challengesContainer" class="space-y-3">
+                    <!-- Challenges injection hook -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Right Insights & Graphics Layout Column -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Strategic Overview Analytics Rows -->
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
+                
+                <!-- Primary Metric Hero Ring -->
+                <div class="bg-gradient-to-br from-slate-950 to-slate-900 border border-slate-800 p-6 rounded-3xl shadow-xl sm:col-span-2 flex flex-col justify-between min-h-[160px]">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Computed Footprint</p>
+                        <p class="text-5xl font-black tracking-tight mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300"><span id="totalEmissions">0.0</span></p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-2">kg CO₂e / daily score footprint</p>
+                </div>
+
+                <!-- Custom AI Recommendation Module -->
+                <div class="bg-slate-950/30 border border-slate-800 p-6 rounded-3xl shadow-xl sm:col-span-3 flex flex-col justify-between min-h-[160px]">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-widest text-emerald-400 tracking-wider">AI Optimization Strategy</p>
+                        <p id="insightText" class="text-sm font-medium text-slate-300 leading-relaxed mt-2.5">Feed localized parameters into the intake engine to generate direct carbon optimization tips.</p>
+                    </div>
+                    <!-- Badges Row container -->
+                    <div id="badgesContainer" class="flex flex-wrap gap-1.5 mt-3 hidden">
+                        <!-- Badges injection engine -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complex Graphical Breakdown Frame -->
+            <div class="bg-slate-950/40 border border-slate-800 p-6 rounded-3xl shadow-2xl relative">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest">Emission Source Breakdown</h3>
+                    <div class="flex gap-4 text-xs font-semibold text-slate-400">
+                        <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-amber-400"></span> Transit</span>
+                        <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-blue-400"></span> Power</span>
+                        <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Diet</span>
+                    </div>
+                </div>
+                <div class="relative h-64 flex justify-center items-center">
+                    <canvas id="carbonChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- UI Logic Engine Engine Script -->
+    <script>
+        let carbonChart;
+
+        // Scientific carbon indexing approximations (kg CO2 per unit)
+        const FACTORS = {
+            transport: 0.21,   
+            electricity: 0.45, 
+            diet: { meat: 7.2, balanced: 5.4, vegetarian: 3.8, vegan: 2.9 }
+        };
+
+        // Gamification Data Structures
+        let challenges = [
+            { id: 1, text: "Commute via bicycle or walk today", reward: "Eco-Commuter", status: "idle" },
+            { id: 2, text: "Swap all dairy/meat meals for plant alternatives", reward: "Green Plate", status: "idle" }
+        ];
+        let unlockedBadges = [];
+
+        window.onload = function() {
+            loadSavedData();
+            renderChallenges();
+        };
+
+        function calculateCarbon(transport, electricity, dietType) {
+            const transportScore = transport * FACTORS.transport;
+            const electricityScore = electricity * FACTORS.electricity;
+            const dietScore = FACTORS.diet[dietType] || 0;
+            const total = transportScore + electricityScore + dietScore;
+
+            return {
+                total: total.toFixed(1),
+                breakdown: [transportScore.toFixed(1), electricityScore.toFixed(1), dietScore.toFixed(1)]
+            };
+        }
+
+        function logData() {
+            const transportVal = parseFloat(document.getElementById('transport').value) || 0;
+            const electricityVal = parseFloat(document.getElementById('electricity').value) || 0;
+            const dietVal = document.getElementById('diet').value;
+
+            const result = calculateCarbon(transportVal, electricityVal, dietVal);
+
+            const userData = {
+                inputs: { transport: transportVal, electricity: electricityVal, diet: dietVal },
+                result: result,
+                unlockedBadges: unlockedBadges
+            };
+            localStorage.setItem('ecoTrackProData', JSON.stringify(userData));
+
+            updateUI(result.total, result.breakdown, userData.inputs);
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('ecoTrackProData');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                document.getElementById('transport').value = parsed.inputs.transport;
+                document.getElementById('electricity').value = parsed.inputs.electricity;
+                document.getElementById('diet').value = parsed.inputs.diet;
+                unlockedBadges = parsed.unlockedBadges || [];
+
+                updateUI(parsed.result.total, parsed.result.breakdown, parsed.inputs);
+            } else {
+                updateUI('0.0', [0, 0, 0], { diet: 'none' });
+            }
+        }
+
+        function updateUI(total, breakdown, inputs) {
+            document.getElementById('totalEmissions').innerText = total;
+
+            const insightBox = document.getElementById('insightText');
+            if (parseFloat(total) === 0) {
+                insightBox.innerText = "Feed localized parameters into the intake engine to generate direct carbon optimization tips.";
+            } else if (parseFloat(breakdown[0]) > parseFloat(breakdown[1]) && parseFloat(breakdown[0]) > parseFloat(breakdown[2])) {
+                insightBox.innerHTML = "💡 <span class='text-white font-semibold'>Transit emissions are high.</span> Consider utilizing public rail infrastructure or micro-mobility options to depress your curve.";
+            } else if (parseFloat(breakdown[1]) > parseFloat(breakdown[0]) && parseFloat(breakdown[1]) > parseFloat(breakdown[2])) {
+                insightBox.innerHTML = "💡 <span class='text-white font-semibold'>Grid power demand is scaling heavily.</span> Optimizing appliance performance cycles or turning off deep-standby states will lower metrics quickly.";
+            } else if (inputs.diet === 'meat') {
+                insightBox.innerHTML = "💡 <span class='text-white font-semibold'>Dietary parameters scaling up.</span> Integrating partial vegetarian schedules can lower direct ecosystem overhead footprint pipelines.";
+            } else {
+                insightBox.innerHTML = "✨ <span class='text-emerald-400 font-semibold'>Highly optimized performance profile.</span> Current usage indexes sit safely below domestic ecological carrying threshold frameworks.";
+            }
+
+            renderChart(breakdown);
+            renderBadges();
+        }
+
+        function renderChart(dataPoints) {
+            const ctx = document.getElementById('carbonChart').getContext('2d');
+            if (carbonChart) { carbonChart.destroy(); }
+
+            // Safe fallback configuration loop if data is empty
+            const hasData = dataPoints.reduce((a, b) => parseFloat(a) + parseFloat(b), 0) > 0;
+            const finalData = hasData ? dataPoints : [1, 1, 1];
+            const finalColors = hasData ? ['#fbbf24', '#60a5fa', '#34d399'] : ['#1e293b', '#1e293b', '#1e293b'];
+
+            carbonChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Transit Emissions', 'Grid Power Load', 'Diet Footprint Profile'],
+                    datasets: [{
+                        data: finalData,
+                        backgroundColor: finalColors,
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '78%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: hasData } }
+                }
+            });
+        }
+
+        // Gamification Engine Mechanics
+        function renderChallenges() {
+            const container = document.getElementById('challengesContainer');
+            container.innerHTML = challenges.map(c => `
+                <div class="p-3.5 bg-slate-900/60 border border-slate-800 rounded-xl text-xs flex flex-col justify-between gap-2.5 transition-all hover:border-slate-700">
+                    <div>
+                        <p class="font-medium text-slate-200 leading-relaxed">${c.text}</p>
+                        <p class="text-[10px] text-amber-400 font-bold tracking-wide mt-1">🏅 Reward: ${c.reward} Badge</p>
+                    </div>
+                    <div>
+                        ${c.status === 'idle' ? `
+                            <button onclick="acceptChallenge(${c.id})" class="bg-slate-800 border border-slate-700 text-slate-300 font-bold px-3 py-1.5 rounded-md hover:bg-slate-700 hover:text-white transition-colors cursor-pointer w-full text-center">Accept Goal</button>
+                        ` : c.status === 'active' ? `
+                            <button onclick="completeChallenge(${c.id}, '${c.reward}')" class="bg-emerald-500 text-slate-950 font-black px-3 py-1.5 rounded-md hover:bg-emerald-400 transition-colors cursor-pointer w-full text-center tracking-wide">Mark Complete</button>
+                        ` : `
+                            <span class="text-slate-500 font-bold flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-slate-600"></span> Unlocked & Added</span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function acceptChallenge(id) {
+            challenges = challenges.map(c => c.id === id ? { ...c, status: 'active' } : c);
+            renderChallenges();
+        }
+
+        function completeChallenge(id, rewardName) {
+            challenges = challenges.map(c => c.id === id ? { ...c, status: 'completed' } : c);
+            if (!unlockedBadges.includes(rewardName)) {
+                unlockedBadges.push(rewardName);
+            }
+            // Save state updates
+            logData();
+            renderChallenges();
+            renderBadges();
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badgesContainer');
+            if (unlockedBadges.length > 0) {
+                container.classList.remove('hidden');
+                container.innerHTML = unlockedBadges.map(b => `
+                    <span class="text-[10px] bg-amber-500/10 text-amber-400 font-extrabold px-2.5 py-1 rounded-md border border-amber-500/20 shadow-sm animate-fade-in">🎖️ ${b}</span>
+                `).join('');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function clearLogs() {
+            localStorage.removeItem('ecoTrackProData');
+            document.getElementById('carbonForm').reset();
+            unlockedBadges = [];
+            challenges = challenges.map(c => ({ ...c, status: 'idle' }));
+            updateUI('0.0', [0, 0, 0], { diet: 'none' });
+            renderChallenges();
+        }
+    </script>
+</body>
+</html>
